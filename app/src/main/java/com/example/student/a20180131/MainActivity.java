@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,14 +31,19 @@ ImageView img;
     {
         Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(it, 123);
+        Log.d("pppppppppppppp","aaaaaaaaaaaaaaaaaaaaaa!!!!!!!!!!!!!!!!");
     }
 
     public void click2(View v)//2
     {
         Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(getExternalFilesDir("PHOTO"), "myphoto.jpg");
-        it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        File f = new File(getExternalFilesDir("PHOTO"), "myphoto3.jpg");
+        Uri photoUri= FileProvider.getUriForFile(this,this.getApplicationContext().getPackageName()
+        +".my.package.name.provider",f);
+        it.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        Log.d("pppppppppppppp","aaaaaaaaaaaaaaaaaaaaaa!!!!!!!!!!!!!!!!"+String.valueOf(f));
         startActivityForResult(it, 456);
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -55,10 +61,13 @@ ImageView img;
         {
             if (resultCode == RESULT_OK)
             {
-                File f = new File(getExternalFilesDir("PHOTO"), "myphoto.jpg");
-                //Bitmap bitmap=BitmapFactory.decodeFile(f.getAbsolutePath());//2
+                File f = new File(getExternalFilesDir("PHOTO"), "myphoto3.jpg");
+                Uri photoUri= FileProvider.getUriForFile(this,this.getApplicationContext().getPackageName()
+                        +".my.package.name.provider",f);
+                // /Bitmap bitmap=BitmapFactory.decodeFile(f.getAbsolutePath());//2
                 try {
-                    InputStream is = new FileInputStream(f);
+                    // InputStream is = new FileInputStream(photoUri);
+                    InputStream is = getContentResolver().openInputStream(photoUri);
                     Log.d("BMP", "Can READ:" + is.available());
                     Bitmap bmp = getFitImage(is);
                     img.setImageBitmap(bmp);
